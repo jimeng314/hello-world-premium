@@ -155,7 +155,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 2.5rem;
             box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
-            max-width: 600px;
+            max-width: 650px;
             width: 90%;
             text-align: center;
             opacity: 0;
@@ -235,7 +235,7 @@
             box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.6);
         }
 
-        /* History Timeline styling */
+        /* History Timeline */
         .timeline {
             text-align: left;
             margin-top: 1.5rem;
@@ -275,6 +275,16 @@
             line-height: 1.4;
         }
 
+        /* Canvas Game styles */
+        #gameCanvas {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            max-width: 100%;
+            cursor: crosshair;
+        }
+
         footer {
             position: absolute;
             bottom: 2rem;
@@ -295,6 +305,10 @@
                 font-size: 0.9rem;
                 padding: 0.4rem 0.8rem;
             }
+
+            .container {
+                padding: 2rem 1.5rem;
+            }
         }
     </style>
 </head>
@@ -306,6 +320,7 @@
 
     <nav>
         <div class="nav-link active" onclick="switchTab('home')">Home</div>
+        <div class="nav-link" onclick="switchTab('game')">Mini Game</div>
         <div class="nav-link" onclick="switchTab('about')">About</div>
         <div class="nav-link" onclick="switchTab('history')">History</div>
     </nav>
@@ -317,7 +332,18 @@
             <h1>Hello World</h1>
             <p class="description">Welcome to the future of web design. A premium single-page experience combining
                 stunning visuals with seamless interactions.</p>
-            <button class="cta-button" onclick="switchTab('about')">Discover More</button>
+            <button class="cta-button" onclick="switchTab('game')">Play Mini Game</button>
+        </section>
+
+        <!-- Mini Game Section -->
+        <section id="game" class="container" style="padding: 2rem;">
+            <p class="subtitle">Retro Platformer</p>
+            <h2>Neon Jumper</h2>
+            <canvas id="gameCanvas" width="500" height="300"></canvas>
+            <p class="description" style="margin-top: 1rem; font-size: 0.9rem; margin-bottom: 0;">
+                Use <b>Arrow Keys</b> or <b>WASD</b> to move and jump.<br>Reach the <span
+                    style="color:#eab308;font-weight:bold;">Gold Block</span> to win!
+            </p>
         </section>
 
         <!-- About Section -->
@@ -337,15 +363,15 @@
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-date">2026. 02</div>
+                    <div class="timeline-content">Added Interactive Retro Mini Game Engine</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2026. 02</div>
                     <div class="timeline-content">Launched Premium Single-page Architecture</div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-date">2025. 11</div>
                     <div class="timeline-content">Embraced Glassmorphism Design System</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">2024. 08</div>
-                    <div class="timeline-content">Project Inception & First 'Hello World'</div>
                 </div>
             </div>
         </section>
@@ -356,66 +382,56 @@
     </footer>
 
     <script>
-        // Glow effect
+        // --- 1. Basic Effects ---
         const glow = document.getElementById('glow');
-
         window.addEventListener('mousemove', (e) => {
             glow.style.left = e.clientX + 'px';
             glow.style.top = e.clientY + 'px';
         });
 
-        // 3D Tilt Effect on active container
+        // 3D Tilt Effect on active container (Disabled when playing game for better focus)
         const wrapper = document.querySelector('.content-wrapper');
-
         wrapper.addEventListener('mousemove', (e) => {
             const activeContainer = document.querySelector('.container.active');
-            if (activeContainer) {
+            if (activeContainer && activeContainer.id !== 'game') {
                 const rect = activeContainer.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
-
                 const xAxis = -x / 40;
                 const yAxis = y / 40;
-
                 activeContainer.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
             }
         });
 
         wrapper.addEventListener('mouseleave', () => {
             const activeContainer = document.querySelector('.container.active');
-            if (activeContainer) {
+            if (activeContainer && activeContainer.id !== 'game') {
                 activeContainer.style.transform = `rotateY(0deg) rotateX(0deg)`;
                 activeContainer.style.transition = 'transform 0.5s ease';
             }
         });
 
-        wrapper.addEventListener('mouseenter', () => {
-            const activeContainer = document.querySelector('.container.active');
-            if (activeContainer) {
-                activeContainer.style.transition = 'none';
-            }
-        });
-
-        // Navigation Logic
+        // --- 2. Navigation Logic ---
         function switchTab(tabId) {
+            // Manage Game State
+            if (tabId === 'game') startGame();
+            else stopGame();
+
             // Update nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            // Find the link that was clicked (using event or roughly matching by mapping)
+            const clickedLink = Array.from(document.querySelectorAll('.nav-link')).find(el => el.getAttribute('onclick').includes(`'${tabId}'`));
+            if (clickedLink) clickedLink.classList.add('active');
 
             // Update containers
             const oldContainer = document.querySelector('.container.active');
             const newContainer = document.getElementById(tabId);
 
-            if (oldContainer !== newContainer) {
+            if (oldContainer && oldContainer !== newContainer) {
                 oldContainer.classList.remove('active');
-
-                // Reset transform of old container
                 oldContainer.style.transform = `translateY(30px) scale(0.95) rotateY(0deg) rotateX(0deg)`;
                 oldContainer.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
 
-                // Small delay to allow fade out before fade in
                 setTimeout(() => {
                     newContainer.classList.add('active');
                     newContainer.style.transform = `translateY(0) scale(1) rotateY(0deg) rotateX(0deg)`;
@@ -423,6 +439,161 @@
                 }, 50);
             }
         }
+
+        // --- 3. Mini Game Engine (Retro Platformer) ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let gameActive = false;
+        let animationId;
+        let pId;
+
+        // Game Entities
+        const player = { x: 50, y: 220, w: 20, h: 20, spd: 4, dx: 0, dy: 0, jump: -10, grounded: false, color: '#ec4899' };
+        const goal = { x: 430, y: 40, w: 30, h: 40, color: '#eab308' };
+
+        // Level Design
+        const platforms = [
+            { x: 0, y: 280, w: 500, h: 20, color: '#6366f1' },    // base ground
+            { x: 140, y: 220, w: 80, h: 15, color: '#a855f7' },
+            { x: 270, y: 160, w: 80, h: 15, color: '#a855f7' },
+            { x: 400, y: 100, w: 80, h: 15, color: '#a855f7' }
+        ];
+
+        // Physics variables
+        const gravity = 0.5;
+        const keys = { r: false, l: false, u: false };
+
+        function updateGame() {
+            if (!gameActive) return;
+
+            // Physics
+            player.dy += gravity;
+            player.dx = 0;
+            if (keys.r) player.dx = player.spd;
+            if (keys.l) player.dx = -player.spd;
+
+            player.x += player.dx;
+            player.y += player.dy;
+            player.grounded = false;
+
+            // Collision with platforms
+            platforms.forEach(p => {
+                if (player.x < p.x + p.w && player.x + player.w > p.x &&
+                    player.y < p.y + p.h && player.y + player.h > p.y) {
+
+                    // Top collision
+                    if (player.dy > 0 && player.y + player.h - player.dy <= p.y + 1) {
+                        player.grounded = true;
+                        player.dy = 0;
+                        player.y = p.y - player.h;
+                    }
+                    // Bottom collision
+                    else if (player.dy < 0 && player.y - player.dy >= p.y + p.h - 1) {
+                        player.dy = 0;
+                        player.y = p.y + p.h;
+                    }
+                    // Side block
+                    else if (player.dx > 0) player.x = p.x - player.w;
+                    else if (player.dx < 0) player.x = p.x + p.w;
+                }
+            });
+
+            // Prevent going out of screen
+            if (player.x < 0) player.x = 0;
+            if (player.x + player.w > canvas.width) player.x = canvas.width - player.w;
+
+            // Reset if fell down (safety)
+            if (player.y > canvas.height) resetLevel();
+
+            // Win condition
+            if (player.x < goal.x + goal.w && player.x + player.w > goal.x &&
+                player.y < goal.y + goal.h && player.y + player.h > goal.y) {
+                alert("🎉 You've reached the Gold Block! You Won!");
+                keys.r = false; keys.l = false; keys.u = false;
+                resetLevel();
+            }
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Platforms
+            platforms.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.roundRect(p.x, p.y, p.w, p.h, 4);
+                ctx.fill();
+            });
+
+            // Draw Goal
+            ctx.fillStyle = goal.color;
+            ctx.shadowColor = goal.color;
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.roundRect(goal.x, goal.y, goal.w, goal.h, 4);
+            ctx.fill();
+            ctx.shadowBlur = 0; // reset shadow
+
+            // Draw Player
+            ctx.fillStyle = player.color;
+            ctx.shadowColor = player.color;
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.roundRect(player.x, player.y, player.w, player.h, 5);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+            updateGame();
+            drawGame();
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function resetLevel() {
+            player.x = 30;
+            player.y = 240;
+            player.dy = 0;
+        }
+
+        function startGame() {
+            if (!gameActive) {
+                gameActive = true;
+                resetLevel();
+                gameLoop();
+            }
+        }
+
+        function stopGame() {
+            gameActive = false;
+            cancelAnimationFrame(animationId);
+            keys.r = false; keys.l = false; keys.u = false;
+        }
+
+        // Input Listeners
+        window.addEventListener('keydown', (e) => {
+            const gameContainer = document.getElementById('game');
+            if (!gameContainer.classList.contains('active')) return; // ignore out of game
+
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') { keys.r = true; e.preventDefault(); }
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keys.l = true; e.preventDefault(); }
+            if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') {
+                if (player.grounded) {
+                    player.dy = player.jump;
+                    player.grounded = false;
+                }
+                keys.u = true;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.r = false;
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.l = false;
+            if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') keys.u = false;
+        });
+
     </script>
 </body>
 
