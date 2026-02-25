@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Hello World | Premium Experience</title>
-    <meta name="description" content="A stunning, modern Hello World demonstration featuring glassmorphism and dynamic animations.">
-    
+    <meta name="description"
+        content="A stunning, modern Hello World demonstration featuring glassmorphism and dynamic animations.">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,10 +21,12 @@
             --background: #030712;
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-hover: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
             --text-sub: #94a3b8;
         }
 
+        /* Basic Setup */
         * {
             margin: 0;
             padding: 0;
@@ -35,13 +39,13 @@
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             overflow: hidden;
             position: relative;
         }
 
-        /* Animated Background Elements */
+        /* Animated Background Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -68,187 +72,358 @@
             animation-delay: -5s;
         }
 
-        .orb-3 {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, var(--accent), transparent);
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-duration: 30s;
-        }
-
         @keyframes move {
-            from { transform: translate(0, 0) scale(1); }
-            to { transform: translate(100px, 50px) scale(1.2); }
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(100px, 50px) scale(1.2);
+            }
         }
 
-        /* Glass Container */
-        .container {
-            position: relative;
-            padding: 3rem;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
+        /* Initial Fade In */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Navigation Bar */
+        nav {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            background: rgba(3, 7, 18, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 20;
             animation: fadeIn 1s ease-out;
+        }
+
+        .nav-link {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 400;
+            padding: 0.5rem 1rem;
+            border-radius: 0.8rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--text-main);
+            background: var(--glass-hover);
+        }
+
+        .nav-link.active {
+            color: #fff;
+            background: var(--glass-border);
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Content Area */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 2rem;
+            position: relative;
             z-index: 10;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Glass Container Card */
+        .container {
+            position: absolute;
+            padding: 4rem 3rem;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2.5rem;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
         }
 
         h1 {
-            font-size: clamp(3rem, 10vw, 5rem);
+            font-size: clamp(3.0rem, 8vw, 4.5rem);
             font-weight: 900;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 30%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.05em;
+            letter-spacing: -0.04em;
             line-height: 1;
         }
 
-        p {
-            font-size: 1.1rem;
-            color: var(--text-sub);
-            font-weight: 300;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
+        h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
         }
 
-        /* Interactive Element */
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Glowing Mouse Follower */
         .cursor-glow {
             position: fixed;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent 70%);
             border-radius: 50%;
             pointer-events: none;
             z-index: 0;
             transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
         }
 
         .cta-button {
-            margin-top: 2rem;
-            padding: 1rem 2rem;
+            margin-top: 1rem;
+            padding: 1.2rem 2.5rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 1rem;
+            border-radius: 1.2rem;
             color: white;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
         }
 
         .cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.6);
         }
 
-        .cta-button::after {
+        /* History Timeline styling */
+        .timeline {
+            text-align: left;
+            margin-top: 1.5rem;
+            border-left: 2px solid var(--glass-border);
+            padding-left: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-item::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(rgba(255,255,255,0.2), transparent);
-            transform: rotate(45deg);
-            transition: 0.5s;
+            left: -1.82rem;
+            top: 0.2rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
         }
 
-        .cta-button:hover::after {
-            left: 100%;
+        .timeline-date {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
         }
 
-        /* SEO Friendly Footer */
+        .timeline-content {
+            font-size: 1rem;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
         footer {
             position: absolute;
             bottom: 2rem;
             color: var(--text-sub);
             font-size: 0.8rem;
-            opacity: 0.5;
+            opacity: 0.4;
+            letter-spacing: 0.05em;
+            z-index: 10;
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 2rem;
+        @media (max-width: 600px) {
+            nav {
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
             }
         }
     </style>
 </head>
+
 <body>
-    <!-- Background orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
-    <!-- Mouse glow effect -->
     <div id="glow" class="cursor-glow"></div>
 
-    <!-- Main Content -->
-    <main class="container">
-        <p>Innovation Starts Here</p>
-        <h1 id="main-title">Hello World</h1>
-        <button class="cta-button" onclick="alert('Welcome to the future!')">Explore Vision</button>
+    <nav>
+        <div class="nav-link active" onclick="switchTab('home')">Home</div>
+        <div class="nav-link" onclick="switchTab('about')">About</div>
+        <div class="nav-link" onclick="switchTab('history')">History</div>
+    </nav>
+
+    <main class="content-wrapper">
+        <!-- Home Section -->
+        <section id="home" class="container active">
+            <p class="subtitle">Innovation Starts Here</p>
+            <h1>Hello World</h1>
+            <p class="description">Welcome to the future of web design. A premium single-page experience combining
+                stunning visuals with seamless interactions.</p>
+            <button class="cta-button" onclick="switchTab('about')">Discover More</button>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="container">
+            <p class="subtitle">Who We Are</p>
+            <h2>About Us</h2>
+            <p class="description">We are dedicated to crafting breathtaking digital experiences. By utilizing modern
+                technologies like CSS variables, glassmorphism, and dynamic animations, we turn simple ideas into
+                premium realities.</p>
+            <button class="cta-button" onclick="switchTab('history')">View History</button>
+        </section>
+
+        <!-- History Section -->
+        <section id="history" class="container">
+            <p class="subtitle">Our Journey</p>
+            <h2>History</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">2026. 02</div>
+                    <div class="timeline-content">Launched Premium Single-page Architecture</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025. 11</div>
+                    <div class="timeline-content">Embraced Glassmorphism Design System</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2024. 08</div>
+                    <div class="timeline-content">Project Inception & First 'Hello World'</div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
-        &copy; 2026 Modern Web Design. Single-file architecture.
+        &copy; 2026 Premium Web Experience. Built with Passion.
     </footer>
 
     <script>
-        // Interactive glow following mouse
+        // Glow effect
         const glow = document.getElementById('glow');
-        
+
         window.addEventListener('mousemove', (e) => {
             glow.style.left = e.clientX + 'px';
             glow.style.top = e.clientY + 'px';
         });
 
-        // Simple text animation on load
-        const title = document.getElementById('main-title');
-        title.style.opacity = '0';
-        title.style.transition = 'opacity 2s ease-in-out, transform 1.5s cubic-bezier(0.16, 1, 0.3, 1)';
-        
-        setTimeout(() => {
-            title.style.opacity = '1';
-            title.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                title.style.transform = 'scale(1)';
-            }, 1000);
-        }, 300);
+        // 3D Tilt Effect on active container
+        const wrapper = document.querySelector('.content-wrapper');
 
-        // Dynamic tilt effect for the container
-        const container = document.querySelector('.container');
-        document.addEventListener('mousemove', (e) => {
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        wrapper.addEventListener('mousemove', (e) => {
+            const activeContainer = document.querySelector('.container.active');
+            if (activeContainer) {
+                const rect = activeContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                const xAxis = -x / 40;
+                const yAxis = y / 40;
+
+                activeContainer.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            }
         });
 
-        // Reset tilt on mouse out
-        document.addEventListener('mouseleave', () => {
-            container.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            container.style.transition = 'all 0.5s ease';
+        wrapper.addEventListener('mouseleave', () => {
+            const activeContainer = document.querySelector('.container.active');
+            if (activeContainer) {
+                activeContainer.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                activeContainer.style.transition = 'transform 0.5s ease';
+            }
         });
 
-        document.addEventListener('mouseenter', () => {
-            container.style.transition = 'none';
+        wrapper.addEventListener('mouseenter', () => {
+            const activeContainer = document.querySelector('.container.active');
+            if (activeContainer) {
+                activeContainer.style.transition = 'none';
+            }
         });
+
+        // Navigation Logic
+        function switchTab(tabId) {
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Update containers
+            const oldContainer = document.querySelector('.container.active');
+            const newContainer = document.getElementById(tabId);
+
+            if (oldContainer !== newContainer) {
+                oldContainer.classList.remove('active');
+
+                // Reset transform of old container
+                oldContainer.style.transform = `translateY(30px) scale(0.95) rotateY(0deg) rotateX(0deg)`;
+                oldContainer.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+
+                // Small delay to allow fade out before fade in
+                setTimeout(() => {
+                    newContainer.classList.add('active');
+                    newContainer.style.transform = `translateY(0) scale(1) rotateY(0deg) rotateX(0deg)`;
+                    newContainer.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                }, 50);
+            }
+        }
     </script>
 </body>
+
 </html>
